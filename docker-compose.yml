@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=production
+    volumes:
+      - ./app:/usr/share/nginx/html # 바인드 마운트 설정 (로컬 수정시 즉각 반영)
+    networks:
+      - dev-network
+
+  # 보너스 과제용 보조 서비스 (Redis 예시)
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - dev-network
+
+volumes:
+  redis-data: # Docker 볼륨 선언
+
+networks:
+  dev-network: # 컨테이너 간 통신을 위한 네트워크 선언
