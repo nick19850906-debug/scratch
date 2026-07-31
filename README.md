@@ -46,31 +46,31 @@
 
 ### 4-1. 터미널 조작 및 권한 실습
 * 현재 위치 확인, 파일 생성/복사/이동/삭제 및 `chmod` 권한 변경 전후 비교
-* 📄 [상세 로그보기](./Log_4-1_Terminal.md)
+* 📄 [상세 로그보기](Log_4-1_Terminal.md)
 
 ### 4-2. Docker 운영/검증
 * `docker --version`, `docker info` 설치 점검 및 `hello-world`, `ubuntu` 인터랙티브 진입 실습
-* 📄 [상세 로그보기](./Log_4-2_Docker.md)
+* 📄 [상세 로그보기](Log_4-2_Docker.md)
 
 ### 4-3. Dockerfile 기반 웹서버 컨테이너
 * `nginx:alpine` 베이스 이미지 기반 Dockerfile 작성 및 커스텀 이미지 빌드
-* 📄 [상세 로그보기](./Log_4-3_Dockerfile.md)
+* 📄 [상세 로그보기](Log_4-3_Dockerfile.md)
 
 ### 4-4. 포트매핑 접속
 * `-p 8080:80` 포트 포워딩 적용 후 브라우저 및 `curl` 접속 응답 성공 검증
-* 📄 [상세 로그보기](./Log_4-4_PortMapping.md)
+* 📄 [상세 로그보기](Log_4-4_PortMapping.md)
 
 ### 4-5. 바인드 마운트
 * 로컬 `app/` 디렉토리를 컨테이너에 바인드 마운트하여 실시간 수정 반영 검증
-* 📄 [상세 로그보기](./Log_4-5_BindMount.md)
+* 📄 [상세 로그보기](Log_4-5_BindMount.md)
 
 ### 4-6. 볼륨 연속성
 * `docker volume` 생성 후 컨테이너 삭제(파기) 전/후 데이터 보존 검증
-* 📄 [상세 로그보기](./Log_4-6_Volume.md)
+* 📄 [상세 로그보기](Log_4-6_Volume.md)
 
 ### 4-7. Git 설정 및 GitHub/VSCode 연동
 * `git config` 프로필 설정 및 VS Code와 GitHub 원격 저장소(`main` 브랜치) 연동
-* 📄 [상세 로그보기](./Log_4-7_Git.md)
+* 📄 [상세 로그보기](Log_4-7_Git.md)
 
 ---
 
