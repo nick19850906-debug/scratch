@@ -1,10 +1,12 @@
 # 미션1: 개발 워크스테이션 구축
 
-![macOS](https://img.shields.io/badge/macOS-Sonoma-000000?style=flat-square&logo=apple&logoColor=white)
-![OrbStack](https://img.shields.io/badge/OrbStack-v1.5-1890FF?style=flat-square&logo=linux&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-26.0.0-2496ED?style=flat-square&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-2.39.3-F05032?style=flat-square&logo=git&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-alpine-009639?style=flat-square&logo=nginx&logoColor=white)
+<p>
+  <img src="https://img.shields.io/badge/macOS-Sonoma-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS" />&nbsp;
+  <img src="https://img.shields.io/badge/OrbStack-v1.5-1890FF?style=flat-square&logo=linux&logoColor=white" alt="OrbStack" />&nbsp;
+  <img src="https://img.shields.io/badge/Docker-26.0.0-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" />&nbsp;
+  <img src="https://img.shields.io/badge/Git-2.39.3-F05032?style=flat-square&logo=git&logoColor=white" alt="Git" />&nbsp;
+  <img src="https://img.shields.io/badge/Nginx-alpine-009639?style=flat-square&logo=nginx&logoColor=white" alt="Nginx" />
+</p>
 
 ---
 
@@ -62,7 +64,7 @@
 * 로컬 `app/` 디렉토리를 컨테이너에 바인드 마운트하여 실시간 수정 반영 검증
 * 📄 [상세 로그보기](./Log_4-5.바인드마운트.md)
 
-### 4-6. 볼륨 영속성
+### 4-6. 볼륨 연속성
 * `docker volume` 생성 후 컨테이너 삭제(파기) 전/후 데이터 보존 검증
 * 📄 [상세 로그보기](./Log_4-6.볼륨영속성.md)
 
