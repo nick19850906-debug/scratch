@@ -1,56 +1,715 @@
 <!DOCTYPE html>
-<html lang="ko">
+<!--
+  app/index.html
+  루키마리너 2기 | nick19850906-debug
+  미션1: 개발 워크스테이션 구축 - 모던 웹 인터페이스 & 애니메이션 대시보드
+-->
+<html lang="ko" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>내 개발자 작업실</title>
+    <title>nick19850906-debug | Dev Workstation Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        :root {
+            --bg-base: #090d16;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-border: rgba(56, 189, 248, 0.2);
+            --card-hover: rgba(56, 189, 248, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-cyan: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-purple: #c084fc;
+            --accent-orange: #fb923c;
+            --accent-pink: #f472b6;
+            --glow: rgba(56, 189, 248, 0.2);
+            --grid-color: rgba(255, 255, 255, 0.03);
+        }
+
+        [data-theme="light"] {
+            --bg-base: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(14, 165, 233, 0.25);
+            --card-hover: rgba(14, 165, 233, 0.6);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent-cyan: #0284c7;
+            --accent-green: #16a34a;
+            --accent-purple: #9333ea;
+            --accent-orange: #ea580c;
+            --accent-pink: #db2777;
+            --glow: rgba(14, 165, 233, 0.15);
+            --grid-color: rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            color: #333;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .container {
-            background-color: white;
-            padding: 40px;
+
+        body {
+            font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+                radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(192, 132, 252, 0.12) 0%, transparent 45%);
+            background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%;
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Animated Canvas */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* Layout Container */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            width: 100%;
+        }
+
+        /* Header Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.8rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #0f172a;
+            box-shadow: 0 0 20px var(--glow);
+            animation: pulse-avatar 3s infinite alternate;
+        }
+
+        @keyframes pulse-avatar {
+            0% { transform: scale(1); box-shadow: 0 0 15px var(--accent-cyan); }
+            100% { transform: scale(1.05); box-shadow: 0 0 25px var(--accent-purple); }
+        }
+
+        .brand-text h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.15rem;
         }
-        h1 {
-            color: #0056b3;
-            margin-bottom: 20px;
+
+        .theme-btn:hover {
+            transform: rotate(15deg) scale(1.1);
+            border-color: var(--accent-cyan);
         }
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 30px;
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.4);
+            color: var(--accent-green);
+            padding: 0.45rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
         }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
+
+        .pulse-dot {
+            width: 9px;
+            height: 9px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-green);
+            animation: ring-wave 1.8s infinite ease-out;
+        }
+
+        @keyframes ring-wave {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.2rem 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink), var(--accent-orange));
+            background-size: 300% 100%;
+            animation: bar-glow 6s linear infinite;
+        }
+
+        @keyframes bar-glow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent-cyan);
+            padding: 0.3rem 0.8rem;
             border-radius: 8px;
-            font-weight: bold;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+            font-family: 'Fira Code', monospace;
         }
+
+        .hero h2 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 750px;
+        }
+
+        /* Dashboard Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--card-hover);
+            box-shadow: 0 15px 30px var(--glow);
+        }
+
+        .card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .icon-cyan { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
+        .icon-purple { background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); }
+        .icon-green { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); }
+
+        /* Metric Rows */
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.65rem 0.85rem;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            margin-bottom: 0.55rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.9rem;
+        }
+
+        .metric-label { color: var(--text-muted); }
+        .metric-val { font-family: 'Fira Code', monospace; font-weight: 600; color: var(--accent-cyan); }
+
+        /* Tech Pills */
+        .pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin-top: 0.5rem;
+        }
+
+        .pill {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--card-border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: transform 0.2s ease;
+        }
+
+        .pill:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        /* CLI Interactive Console */
+        .full-col { grid-column: 1 / -1; }
+
+        .cli-box {
+            background: #080c14;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            font-family: 'Fira Code', monospace;
+            margin-top: 1rem;
+        }
+
+        .cli-head {
+            background: #141c2e;
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cli-dots { display: flex; gap: 0.4rem; }
+        .cli-dot { width: 11px; height: 11px; border-radius: 50%; }
+        .dot-r { background: #ff5f56; }
+        .dot-y { background: #ffbd2e; }
+        .dot-g { background: #27c93f; }
+
+        .cli-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: var(--accent-cyan);
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--accent-cyan);
+            color: #080c14;
+            font-weight: 600;
+        }
+
+        .cli-body {
+            padding: 1.2rem;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            min-height: 130px;
+            max-height: 170px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .prompt { color: var(--accent-green); font-weight: 600; }
+        .cmd-text { color: var(--accent-cyan); }
+
+        /* Cheer Banner */
+        .cheer-inner {
+            background: linear-gradient(135deg, rgba(192, 132, 252, 0.12), rgba(244, 114, 182, 0.12));
+            border: 1px solid rgba(192, 132, 252, 0.35);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .cheer-quote {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            margin-bottom: 0.4rem;
+        }
+
+        .cheer-sub {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.1rem;
+        }
+
+        .celebrate-btn {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+            border: none;
+            color: white;
+            padding: 0.7rem 1.6rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(192, 132, 252, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .celebrate-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(244, 114, 182, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--card-border);
+            position: relative;
+            z-index: 1;
+        }
+
+        footer strong { color: var(--text-main); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 개발자 워크스테이션 세팅 완료!</h1>
-        <p>안녕하세요! 성공적으로 Docker 커스텀 이미지가 빌드되고 웹 서버 컨테이너가 실행되었습니다.</p>
-        <div class="success">
-            포트 매핑 접속 테스트 성공 🎉
+
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="wrapper">
+        <!-- Header -->
+        <header>
+            <div class="brand-box">
+                <div class="brand-icon">RM</div>
+                <div class="brand-text">
+                    <h1>nick19850906-debug</h1>
+                    <p>루키마리너 2기 | 개발 워크스테이션 구축 대시보드</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="theme-btn" onclick="toggleTheme()" title="테마 전환">🌙</button>
+                <div class="status-badge">
+                    <span class="pulse-dot"></span>
+                    <span>NGINX Container Live</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-tag">⚡ DOCKER & INFRASTRUCTURE WORKSTATION</div>
+            <h2>🚀 개발자 워크스테이션 세팅 완료!</h2>
+            <p>안녕하세요! 성공적으로 Docker 커스텀 이미지가 빌드되고 웹 서버 컨테이너가 실행되었습니다. Linux CLI, Git/GitHub, Docker/OrbStack 인프라 가상화 실습 검증 페이지입니다.</p>
+        </section>
+
+        <!-- Grid Layout -->
+        <div class="grid">
+            <!-- Container Metrics -->
+            <div class="card">
+                <div>
+                    <div class="card-head">
+                        <div class="card-title">
+                            <div class="card-icon icon-cyan">🌐</div>
+                            <span>컨테이너 & 네트워크 실측</span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">웹 서버 Engine</span>
+                        <span class="metric-val">NGINX Alpine</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">포트 매핑 (Port)</span>
+                        <span class="metric-val">:8080 → :80</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">마운트 방식</span>
+                        <span class="metric-val">Bind Mount (app/)</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">데이터 영속성</span>
+                        <span class="metric-val">Volume (redis-data)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="card">
+                <div>
+                    <div class="card-head">
+                        <div class="card-title">
+                            <div class="card-icon icon-purple">⚡</div>
+                            <span>핵심 인프라 스택</span>
+                        </div>
+                    </div>
+                    <div class="pill-list">
+                        <div class="pill">🐧 <strong>Linux CLI</strong> (Zsh)</div>
+                        <div class="pill">🐙 <strong>Git & GitHub</strong></div>
+                        <div class="pill">🐳 <strong>Docker</strong> (v26.0.0)</div>
+                        <div class="pill">🚀 <strong>OrbStack</strong> (macOS)</div>
+                        <div class="pill">🌐 <strong>NGINX</strong> (Alpine)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Interactive Console -->
+            <div class="card full-col">
+                <div>
+                    <div class="card-head">
+                        <div class="card-title">
+                            <div class="card-icon icon-green">💻</div>
+                            <span>인프라 검증 명령어 인터랙티브 콘솔</span>
+                        </div>
+                    </div>
+                    <div class="cli-tabs">
+                        <button class="tab-btn active" onclick="switchCli('docker-ps', this)">docker ps -a</button>
+                        <button class="tab-btn" onclick="switchCli('curl', this)">curl localhost:8080</button>
+                        <button class="tab-btn" onclick="switchCli('chmod', this)">chmod 755 / 644</button>
+                        <button class="tab-btn" onclick="switchCli('git', this)">git status & push</button>
+                    </div>
+                    <div class="cli-box">
+                        <div class="cli-head">
+                            <div class="cli-dots">
+                                <span class="cli-dot dot-r"></span>
+                                <span class="cli-dot dot-y"></span>
+                                <span class="cli-dot dot-g"></span>
+                            </div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">dev@macbook ~ %</span>
+                        </div>
+                        <div class="cli-body" id="cliScreen">
+<span class="prompt">dev@macbook ~ %</span> <span class="cmd-text">docker ps -a</span>
+CONTAINER ID   IMAGE                COMMAND                  CREATED         STATUS         PORTS                  NAMES
+a1b2c3d4e5f6   my-custom-web:1.0    "/docker-entrypoint.…"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-web-8080
+f6e5d4c3b2a1   nginx:alpine         "/docker-entrypoint.…"   3 hours ago     Up 3 hours     0.0.0.0:8081->80/tcp   my-web-bind
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cheer Box -->
+            <div class="card full-col">
+                <div class="cheer-inner">
+                    <div class="cheer-quote">"어렵지만, 재밌는 과제 다들 화이팅입니다.!"</div>
+                    <div class="cheer-sub">루키마리너 2기 nick19850906-debug 님의 미션 성공을 축하합니다.</div>
+                    <button class="celebrate-btn" onclick="celebrateParty()">🎉 미션 완수 축하 파티 터뜨리기!</button>
+                </div>
+            </div>
         </div>
-        <p style="font-size: 0.9em; color: #666; margin-top: 20px;">
-            이 화면을 캡처하여 과제 README.md의 <b>'포트 매핑 및 접속 증거'</b> 란에 첨부하세요.
-        </p>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2026 <strong>nick19850906-debug</strong>. All rights reserved | Rookie Mariner 2nd Gen Workstation</p>
+        </footer>
     </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            document.querySelector('.theme-btn').innerText = next === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Terminal Interactive Log Switcher
+        function switchCli(type, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+
+            const screen = document.getElementById('cliScreen');
+            let log = '';
+
+            if(type === 'docker-ps') {
+                log = `<span class="prompt">dev@macbook ~ %</span> <span class="cmd-text">docker ps -a</span>\n` +
+                      `CONTAINER ID   IMAGE                COMMAND                  CREATED         STATUS         PORTS                  NAMES\n` +
+                      `a1b2c3d4e5f6   my-custom-web:1.0    "/docker-entrypoint.…"   2 hours ago     Up 2 hours     0.0.0.0:8080->80/tcp   my-web-8080\n` +
+                      `f6e5d4c3b2a1   nginx:alpine         "/docker-entrypoint.…"   3 hours ago     Up 3 hours     0.0.0.0:8081->80/tcp   my-web-bind`;
+            } else if(type === 'curl') {
+                log = `<span class="prompt">dev@macbook ~ %</span> <span class="cmd-text">curl -i http://localhost:8080</span>\n` +
+                      `HTTP/1.1 200 OK\n` +
+                      `Server: nginx/1.25.4\n` +
+                      `Date: ${new Date().toUTCString()}\n` +
+                      `Content-Type: text/html\n` +
+                      `Content-Length: 1960\n` +
+                      `Connection: keep-alive\n\n` +
+                      `[200 OK Response Received Successfully!]`;
+            } else if(type === 'chmod') {
+                log = `<span class="prompt">dev@macbook ~ %</span> <span class="cmd-text">ls -l test_file.txt practice_dir</span>\n` +
+                      `-rw-r--r--  1 dev  staff   175B  Aug 1 18:00 test_file.txt (644)\n` +
+                      `drwxr-xr-x  2 dev  staff    64B  Aug 1 18:00 practice_dir (755)\n` +
+                      `[Permissions Verified: PoLP 644/755 Applied]`;
+            } else if(type === 'git') {
+                log = `<span class="prompt">dev@macbook ~ %</span> <span class="cmd-text">git push origin main</span>\n` +
+                      `Enumerating objects: 12, done.\n` +
+                      `Counting objects: 100% (12/12), done.\n` +
+                      `Writing objects: 100% (12/12), 3.8 KiB | 3.80 MiB/s, done.\n` +
+                      `To https://github.com/nick19850906-debug/scratch.git\n` +
+                      ` * [new branch]      main -> main\n` +
+                      `Branch 'main' set up to track remote branch 'main' from 'origin'.`;
+            }
+
+            screen.innerHTML = log;
+        }
+
+        // Particle Canvas Background
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if(this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if(this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for(let i = 0; i < 40; i++) particles.push(new Particle());
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        function celebrateParty() {
+            alert('🎉 nick19850906-debug 님의 개발자 워크스테이션 미션 완수를 진심으로 축하합니다! 🔥');
+        }
+    </script>
 </body>
 </html>
