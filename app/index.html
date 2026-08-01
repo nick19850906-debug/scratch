@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
-  app/index.html - [EPIC Cyber Aurora Glassmorphism Dashboard]
+  app/index.html - [EPIC Cyber Aurora Glassmorphism Dashboard + Fireworks Animation]
   작성자: nick19850906-debug | 루키마리너 2기
-  목적: NGINX 컨테이너 실습용 초고성능 인터랙티브 에픽 대시보드
+  목적: NGINX 컨테이너 실습용 초고성능 인터랙티브 대시보드 & 캔버스 폭죽 파티클 엔진
 -->
 <html lang="ko" data-theme="dark">
 <head>
@@ -77,7 +77,18 @@
             opacity: 0.8;
         }
 
-        /* 2. Interactive Spotlight Cursor Follower */
+        /* 2. Fullscreen Fireworks Explosion Canvas Overlay */
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* 3. Interactive Spotlight Cursor Follower */
         #cursorSpotlight {
             position: fixed;
             top: 0;
@@ -514,18 +525,54 @@
             background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
             border: none;
             color: white;
-            padding: 0.85rem 2rem;
+            padding: 0.95rem 2.2rem;
             border-radius: 14px;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(191, 90, 242, 0.4);
+            box-shadow: 0 8px 30px rgba(191, 90, 242, 0.5);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
         }
 
         .epic-party-btn:hover {
-            transform: scale(1.06) translateY(-2px);
-            box-shadow: 0 12px 35px rgba(255, 55, 95, 0.6);
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 14px 40px rgba(255, 55, 95, 0.7);
+        }
+
+        .epic-party-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Animated Toast Banner */
+        #toastBanner {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(13, 18, 36, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--neon-cyan);
+            color: var(--text-main);
+            padding: 0.9rem 1.8rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        #toastBanner.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
         /* Footer */
@@ -547,8 +594,17 @@
     <!-- 1. Dynamic Aurora Gradient Wave Canvas -->
     <canvas id="auroraCanvas"></canvas>
 
-    <!-- 2. Interactive Spotlight Cursor Follower -->
+    <!-- 2. Fullscreen Fireworks Explosion Canvas Overlay -->
+    <canvas id="fireworksCanvas"></canvas>
+
+    <!-- 3. Interactive Spotlight Cursor Follower -->
     <div id="cursorSpotlight"></div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toastBanner">
+        <span>🎆</span>
+        <span id="toastMessage">EPIC 축하 폭죽이 파티클로 폭발합니다!</span>
+    </div>
 
     <div class="app-wrapper">
         <!-- Header -->
@@ -664,7 +720,7 @@ f6e5d4c3b2a1   nginx:alpine         "/docker-entrypoint.…"   3 hours ago     U
                 <div class="cheer-box">
                     <div class="cheer-title">"어렵지만, 재밌는 과제 다들 화이팅입니다.!"</div>
                     <div class="cheer-desc">루키마리너 2기 nick19850906-debug 님의 개발자 워크스테이션 미션 완수를 축하합니다.</div>
-                    <button class="epic-party-btn" onclick="fireEpicFireworks()">🎉 EPIC 미션 완수 축하 폭죽 터뜨리기!</button>
+                    <button class="epic-party-btn" onclick="fireEpicFireworksAnimation()">🎉 EPIC 미션 완수 축하 폭죽 터뜨리기!</button>
                 </div>
             </div>
         </div>
@@ -691,6 +747,7 @@ f6e5d4c3b2a1   nginx:alpine         "/docker-entrypoint.…"   3 hours ago     U
             const next = cur === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             document.querySelector('.theme-btn').innerText = next === 'dark' ? '🌙' : '☀️';
+            showToast(next === 'dark' ? '🌙 다크 테마로 전환되었습니다.' : '☀️ 라이트 테마로 전환되었습니다.');
         }
 
         // 3. Interactive CLI Tab Switcher
@@ -734,50 +791,50 @@ f6e5d4c3b2a1   nginx:alpine         "/docker-entrypoint.…"   3 hours ago     U
         }
 
         // 4. Dynamic Aurora Gradient Wave Canvas
-        const canvas = document.getElementById('auroraCanvas');
-        const ctx = canvas.getContext('2d');
+        const auroraCanvas = document.getElementById('auroraCanvas');
+        const auroraCtx = auroraCanvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function resizeAurora() {
+            auroraCanvas.width = window.innerWidth;
+            auroraCanvas.height = window.innerHeight;
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        window.addEventListener('resize', resizeAurora);
+        resizeAurora();
 
-        let step = 0;
+        let auroraStep = 0;
         function drawAuroraWaves() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            step += 0.008;
+            auroraCtx.clearRect(0, 0, auroraCanvas.width, auroraCanvas.height);
+            auroraStep += 0.008;
 
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const color1 = isDark ? 'rgba(0, 243, 255, 0.08)' : 'rgba(2, 132, 199, 0.06)';
             const color2 = isDark ? 'rgba(191, 90, 242, 0.08)' : 'rgba(147, 51, 234, 0.06)';
 
             // Wave 1
-            ctx.beginPath();
-            ctx.fillStyle = color1;
-            ctx.moveTo(0, canvas.height * 0.4);
-            for(let x = 0; x <= canvas.width; x += 20) {
-                const y = Math.sin(x * 0.003 + step) * 60 + Math.cos(x * 0.002 + step * 0.8) * 40 + canvas.height * 0.4;
-                ctx.lineTo(x, y);
+            auroraCtx.beginPath();
+            auroraCtx.fillStyle = color1;
+            auroraCtx.moveTo(0, auroraCanvas.height * 0.4);
+            for(let x = 0; x <= auroraCanvas.width; x += 20) {
+                const y = Math.sin(x * 0.003 + auroraStep) * 60 + Math.cos(x * 0.002 + auroraStep * 0.8) * 40 + auroraCanvas.height * 0.4;
+                auroraCtx.lineTo(x, y);
             }
-            ctx.lineTo(canvas.width, canvas.height);
-            ctx.lineTo(0, canvas.height);
-            ctx.closePath();
-            ctx.fill();
+            auroraCtx.lineTo(auroraCanvas.width, auroraCanvas.height);
+            auroraCtx.lineTo(0, auroraCanvas.height);
+            auroraCtx.closePath();
+            auroraCtx.fill();
 
             // Wave 2
-            ctx.beginPath();
-            ctx.fillStyle = color2;
-            ctx.moveTo(0, canvas.height * 0.6);
-            for(let x = 0; x <= canvas.width; x += 20) {
-                const y = Math.cos(x * 0.004 - step * 1.2) * 70 + Math.sin(x * 0.0015 + step) * 50 + canvas.height * 0.6;
-                ctx.lineTo(x, y);
+            auroraCtx.beginPath();
+            auroraCtx.fillStyle = color2;
+            auroraCtx.moveTo(0, auroraCanvas.height * 0.6);
+            for(let x = 0; x <= auroraCanvas.width; x += 20) {
+                const y = Math.cos(x * 0.004 - auroraStep * 1.2) * 70 + Math.sin(x * 0.0015 + auroraStep) * 50 + auroraCanvas.height * 0.6;
+                auroraCtx.lineTo(x, y);
             }
-            ctx.lineTo(canvas.width, canvas.height);
-            ctx.lineTo(0, canvas.height);
-            ctx.closePath();
-            ctx.fill();
+            auroraCtx.lineTo(auroraCanvas.width, auroraCanvas.height);
+            auroraCtx.lineTo(0, auroraCanvas.height);
+            auroraCtx.closePath();
+            auroraCtx.fill();
 
             requestAnimationFrame(drawAuroraWaves);
         }
@@ -801,8 +858,99 @@ f6e5d4c3b2a1   nginx:alpine         "/docker-entrypoint.…"   3 hours ago     U
             });
         });
 
-        function fireEpicFireworks() {
-            alert('🎉 nick19850906-debug 님의 EPIC 개발자 워크스테이션 구축을 진심으로 축하합니다! 🔥');
+        // 6. REAL-TIME CANVAS FIREWORKS EXPLOSION ENGINE
+        const fwCanvas = document.getElementById('fireworksCanvas');
+        const fwCtx = fwCanvas.getContext('2d');
+        let fwParticles = [];
+
+        function resizeFireworks() {
+            fwCanvas.width = window.innerWidth;
+            fwCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeFireworks);
+        resizeFireworks();
+
+        class SparkParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 9 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.friction = 0.95;
+                this.gravity = 0.12;
+                this.decay = Math.random() * 0.02 + 0.012;
+                this.size = Math.random() * 3.5 + 1.5;
+            }
+            update() {
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                fwCtx.save();
+                fwCtx.globalAlpha = Math.max(0, this.alpha);
+                fwCtx.fillStyle = this.color;
+                fwCtx.shadowBlur = 12;
+                fwCtx.shadowColor = this.color;
+                fwCtx.beginPath();
+                fwCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                fwCtx.fill();
+                fwCtx.restore();
+            }
+        }
+
+        function createExplosion(x, y) {
+            const colors = ['#00f3ff', '#bf5af2', '#ff375f', '#30d158', '#ff9f0a', '#ffffff', '#ffd700'];
+            const count = 75;
+            for(let i = 0; i < count; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                fwParticles.push(new SparkParticle(x, y, color));
+            }
+        }
+
+        function animateFireworks() {
+            fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+            for(let i = fwParticles.length - 1; i >= 0; i--) {
+                const p = fwParticles[i];
+                p.update();
+                p.draw();
+                if(p.alpha <= 0) {
+                    fwParticles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animateFireworks);
+        }
+        animateFireworks();
+
+        function fireEpicFireworksAnimation() {
+            showToast('🎆 EPIC 미션 완수 축하 폭죽이 파티클로 폭발합니다! 🔥');
+
+            // Burst 7 fireworks explosions across the screen sequentially
+            const bursts = 8;
+            for(let i = 0; i < bursts; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * (window.innerWidth * 0.8) + (window.innerWidth * 0.1);
+                    const y = Math.random() * (window.innerHeight * 0.5) + (window.innerHeight * 0.1);
+                    createExplosion(x, y);
+                }, i * 220);
+            }
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toastBanner');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>
