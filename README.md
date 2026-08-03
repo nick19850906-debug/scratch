@@ -63,7 +63,6 @@ flowchart TD
 4. [단계별 세부 수행 및 검증 로그 (Verification Logs)](#4-단계별-세부-수행-및-검증-로그-verification-logs)
 5. [핵심 엔지니어링 개념 정리 (6 Core Principles)](#5-핵심-엔지니어링-개념-정리-6-core-principles)
 6. [실무 관점 트러블슈팅 (Troubleshooting TS-01 & TS-02)](#6-실무-관점-트러블슈팅-troubleshooting-ts-01--ts-02)
-7. [보너스 과제 (Docker Compose Multi-Container)](#7-보너스-과제-docker-compose-multi-container)
 
 ---
 
@@ -92,7 +91,6 @@ flowchart TD
 - [x] **바인드 마운트:** `-v ./app:/usr/share/nginx/html` 실시간 소스 동기화 검증
 - [x] **볼륨 영속성:** `docker volume create` 데이터 파기 전/후 생존 증명
 - [x] **Git & GitHub 연동:** `--local` 사용자 설정, VS Code Source Control 및 원격 `push` 완수
-- [x] **보너스 과제:** `docker-compose.yml` 멀티 컨테이너 (Nginx + Redis) 실행 완수
 
 ---
 
@@ -200,51 +198,6 @@ scratch/
 - **문제 증상:** 컨테이너 진입 후 패키지 설치 시 `Permission denied` 에러 발생.
 - **원인 분석:** 베이스 이미지의 기본 계정이 non-root 사용자로 설정됨.
 - **해결책:** `docker exec -u root -it <컨테이너ID> bash` 옵션으로 root 권한을 명시하여 안전하게 진입함.
-
----
-
-## 7. 보너스 과제 (Docker Compose Multi-Container)
-
-`docker-compose.yml` 명세서를 통해 웹 서버(Nginx)와 보조 서비스(Redis)를 한 번에 오케스트레이션 구동합니다.
-
-```yaml
-version: '3.8'
-
-services:
-  web:
-    build: .
-    ports:
-      - "8080:80"
-    environment:
-      - APP_ENV=production
-    volumes:
-      - ./app:/usr/share/nginx/html
-    networks:
-      - dev-network
-
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - dev-network
-
-volumes:
-  redis-data:
-
-networks:
-  dev-network:
-```
-
-```bash
-# 멀티 컨테이너 일괄 실행
-docker compose up -d
-
-# 상태 확인
-docker compose ps
-```
 
 ---
 
