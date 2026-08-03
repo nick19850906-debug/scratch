@@ -22,38 +22,6 @@
 
 ---
 
-## 🏗️ System Architecture & Data Flow
-
-```mermaid
-flowchart TD
-    subgraph Host ["💻 Host Environment (macOS / VS Code)"]
-        User["👤 Developer (nick19850906-debug)"]
-        AppFolder["📁 Local App Source (./app)"]
-        GitRepo["🐙 Git Repository (.git)"]
-    end
-
-    subgraph OrbStack ["⚡ OrbStack Lightweight Engine"]
-        subgraph Containers ["🐳 Docker Container Infrastructure"]
-            WebContainer["🌐 NGINX Alpine Container (my-web-8080)\n[Port 80]"]
-            BindContainer["🔄 Bind Mount Container (my-web-bind)\n[Port 8081]"]
-        end
-        subgraph Storage ["💾 Persistent Storage"]
-            Volume["📦 Named Volume (redis-data)"]
-        end
-    end
-
-    subgraph Remote ["☁️ GitHub Cloud Platform"]
-        GitHub["🐙 nick19850906-debug/scratch"]
-    end
-
-    User -->|"1. Live Code Edit"| AppFolder
-    AppFolder -->|"2. Bind Mount (-v ./app:/usr/share/nginx/html)"| WebContainer
-    WebContainer -->|"3. Port Mapping (-p 8080:80)"| User
-    Volume -->|"4. Data Persistence"| Containers
-    GitRepo -->|"5. Push (git push origin main)"| GitHub
-```
-
----
 
 ## 📋 Table of Contents
 

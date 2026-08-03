@@ -25,7 +25,6 @@ FROM nginx:alpine
 LABEL maintainer="student@example.com"
 LABEL org.opencontainers.image.title="my-custom-web"
 
-ENV APP_ENV=development
 
 # 로컬 app 디렉토리를 컨테이너 Nginx 웹 서빙 경로로 복사
 COPY app/ /usr/share/nginx/html/

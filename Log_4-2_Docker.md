@@ -43,7 +43,7 @@ Status: Downloaded newer image for nginx:alpine
 # 다운로드된 이미지 목록 확인
 $ docker images
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
-nginx        alpine    f876afb64e03   2 weeks ago   42.6MB
+nginx        alpine    f876afb64e03   3 days ago   42.6MB
 
 # 컨테이너 구동
 $ docker run -d --name test-nginx -p 8080:80 nginx:alpine
