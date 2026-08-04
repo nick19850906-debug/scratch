@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+import os
+
+html_content = """<!DOCTYPE html>
 <html lang="ko" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -325,7 +327,7 @@
                     <button class="tab-trigger" onclick="switchCliTab('git', this)">git push</button>
                 </div>
                 <div class="term-body" id="cliScreen">
-<span style="color:var(--accent-green)">c1134czi5625@c5r4s7 ~ %</span> <span style="color:var(--accent-cyan)">docker ps -a</span>
+<span style="color:var(--accent-green)">dev@macbook ~ %</span> <span style="color:var(--accent-cyan)">docker ps -a</span>
 CONTAINER ID   IMAGE               STATUS         PORTS                  NAMES
 a1b2c3d4e5f6   my-custom-web:1.0   Up 2 hours     0.0.0.0:8080->80/tcp   my-web-8080
 f6e5d4c3b2a1   nginx:alpine        Up 3 hours     0.0.0.0:8081->80/tcp   my-web-bind
@@ -384,30 +386,16 @@ f6e5d4c3b2a1   nginx:alpine        Up 3 hours     0.0.0.0:8081->80/tcp   my-web-
             const screen = document.getElementById('cliScreen');
             let log = '';
             if(type === 'docker') {
-                log = `<span style="color:var(--accent-green)">c1134czi5625@c5r4s7 ~ %</span> <span style="color:var(--accent-cyan)">docker ps -a</span>
-` +
-                      `CONTAINER ID   IMAGE               STATUS         PORTS                  NAMES
-` +
-                      `a1b2c3d4e5f6   my-custom-web:1.0   Up 2 hours     0.0.0.0:8080->80/tcp   my-web-8080
-` +
+                log = `<span style="color:var(--accent-green)">dev@macbook ~ %</span> <span style="color:var(--accent-cyan)">docker ps -a</span>\n` +
+                      `CONTAINER ID   IMAGE               STATUS         PORTS                  NAMES\n` +
+                      `a1b2c3d4e5f6   my-custom-web:1.0   Up 2 hours     0.0.0.0:8080->80/tcp   my-web-8080\n` +
                       `f6e5d4c3b2a1   nginx:alpine        Up 3 hours     0.0.0.0:8081->80/tcp   my-web-bind`;
             } else if(type === 'curl') {
-                log = `<span style="color:var(--accent-green)">c1134czi5625@c5r4s7 ~ %</span> <span style="color:var(--accent-cyan)">curl -i http://localhost:8080</span>
-` +
-                      `HTTP/1.1 200 OK
-Server: nginx/1.25.4
-Date: ${new Date().toUTCString()}
-Content-Type: text/html
-
-[200 OK Response Received Successfully!]`;
+                log = `<span style="color:var(--accent-green)">dev@macbook ~ %</span> <span style="color:var(--accent-cyan)">curl -i http://localhost:8080</span>\n` +
+                      `HTTP/1.1 200 OK\nServer: nginx/1.25.4\nDate: ${new Date().toUTCString()}\nContent-Type: text/html\n\n[200 OK Response Received Successfully!]`;
             } else if(type === 'git') {
-                log = `<span style="color:var(--accent-green)">c1134czi5625@c5r4s7 ~ %</span> <span style="color:var(--accent-cyan)">git push origin main</span>
-` +
-                      `Enumerating objects: 12, done.
-Counting objects: 100% (12/12), done.
-Writing objects: 100% (12/12)
-To https://github.com/nick19850906-debug/scratch.git
- * [new branch]      main -> main`;
+                log = `<span style="color:var(--accent-green)">dev@macbook ~ %</span> <span style="color:var(--accent-cyan)">git push origin main</span>\n` +
+                      `Enumerating objects: 12, done.\nCounting objects: 100% (12/12), done.\nWriting objects: 100% (12/12)\nTo https://github.com/nick19850906-debug/scratch.git\n * [new branch]      main -> main`;
             }
             screen.innerHTML = log;
         }
@@ -517,3 +505,9 @@ To https://github.com/nick19850906-debug/scratch.git
     </script>
 </body>
 </html>
+"""
+
+with open("app/index.html", "w") as f:
+    f.write(html_content)
+
+print("Successfully rewrote app/index.html")

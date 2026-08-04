@@ -37,7 +37,7 @@ EXPOSE 80
 ### 2. 커스텀 이미지 빌드 실행 로그
 
 ```bash
-$ docker build -t my-custom-web:1.0 .
+c1134czi5625@c5r4s7 ~ % docker build -t my-custom-web:1.0 .
 [+] Building 1.1s (7/7) FINISHED
  => [internal] load build definition from Dockerfile
  => => transferring dockerfile: 240B
@@ -54,6 +54,6 @@ $ docker build -t my-custom-web:1.0 .
  => => naming to docker.io/library/my-custom-web:1.0
 
 # 빌드된 커스텀 이미지 확인
-$ docker images | grep my-custom-web
+c1134czi5625@c5r4s7 ~ % docker images | grep my-custom-web
 my-custom-web   1.0       b1c2d3e4f5a6   15 seconds ago   42.6MB
 ```
