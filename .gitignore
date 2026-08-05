@@ -1,13 +1,26 @@
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# ==========================================
+# 🚫 Git 푸시 금지 폴더 및 파일 설정 (.gitignore)
+# ==========================================
 
-# Editors
+# 1. 🐍 파이썬 임시/캐시 폴더 및 가상환경 (Python Cache & Virtual Environments)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+
+# 2. 🔑 보안 및 개인설정 파일 (Secrets & Environment Variables)
+.env
+.env.local
+*.pem
+*.key
+secrets.json
+
+# 3. 💻 IDE 및 에디터 설정 폴더 (Editors & IDEs)
 .vscode/
 .idea/
 *.suo
@@ -16,14 +29,27 @@ Thumbs.db
 *.sln
 *.sw?
 
-# Log files
+# 4. 🖥️ 운영체제(OS) 자동 생성 파일 (OS Generated Files)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 5. 📦 빌드 결과물, 노드 모듈 및 로그 폴더 (Build, Node & Logs)
+node_modules/
+dist/
+build/
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Node (in case it is used later)
-node_modules/
-
-# Mac / Linux
+# 6. 📝 기타 임시 및 개인 안내 문서 파일
 *~
+*.bak
+notice.md
+
