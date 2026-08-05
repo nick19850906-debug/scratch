@@ -6,14 +6,14 @@
 
 ```bash
 # 사용자 프로필 설정
-$ git config --global user.name "nick19850906-debug"
-$ git config --global user.email "student@example.com"
+c1134czi5625@c5r4s7 ~ % git config --global user.name "nick19850906-debug"
+c1134czi5625@c5r4s7 ~ % git config --global user.email "student@example.com"
 
 # 기본 브랜치 main 지정
-$ git config --global init.defaultBranch main
+c1134czi5625@c5r4s7 ~ % git config --global init.defaultBranch main
 
 # 설정 내역 점검
-$ git config --list | grep "user\|init"
+c1134czi5625@c5r4s7 ~ % git config --list | grep "user\|init"
 user.name=nick19850906-debug
 user.email=student@example.com
 init.defaultbranch=main
@@ -25,21 +25,21 @@ init.defaultbranch=main
 
 ```bash
 # Git 초기화 및 커밋
-$ git init
-$ git add .
-$ git commit -m "Initial commit: Codyssey Mission 1 개발 워크스테이션 구축 완료"
+c1134czi5625@c5r4s7 ~ % git init
+c1134czi5625@c5r4s7 ~ % git add .
+c1134czi5625@c5r4s7 ~ % git commit -m "Initial commit: Codyssey Mission 1 개발 워크스테이션 구축 완료"
 
 # 원격 저장소 매핑
-$ git remote add origin https://github.com/nick19850906-debug/scratch.git
-$ git branch -M main
+c1134czi5625@c5r4s7 ~ % git remote add origin https://github.com/nick19850906-debug/scratch.git
+c1134czi5625@c5r4s7 ~ % git branch -M main
 
 # 원격 저장소 정보 확인
-$ git remote -v
+c1134czi5625@c5r4s7 ~ % git remote -v
 origin	https://github.com/nick19850906-debug/scratch.git (fetch)
 origin	https://github.com/nick19850906-debug/scratch.git (push)
 
 # GitHub 푸시 완료
-$ git push -u origin main
+c1134czi5625@c5r4s7 ~ % git push -u origin main
 Branch 'main' set up to track remote branch 'main' from 'origin'.
 Everything up-to-date
 ```

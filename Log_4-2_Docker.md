@@ -6,11 +6,11 @@
 
 ```bash
 # Docker 버전 점검
-$ docker --version
+c1134czi5625@c5r4s7 ~ % docker --version
 Docker version 26.0.0, build 2ae903e
 
 # Docker 데몬 상태 확인 (OrbStack)
-$ docker info
+c1134czi5625@c5r4s7 ~ % docker info
 Client:
  Context:    default
  Debug Mode: false
@@ -35,36 +35,36 @@ Server:
 
 ```bash
 # 베이스 이미지 다운로드
-$ docker pull nginx:alpine
+c1134czi5625@c5r4s7 ~ % docker pull nginx:alpine
 alpine: Pulling from library/nginx
 Digest: sha256:6e0339d1bdf8217bbba9d243a7fdd76a91d...
 Status: Downloaded newer image for nginx:alpine
 
 # 다운로드된 이미지 목록 확인
-$ docker images
+c1134czi5625@c5r4s7 ~ % docker images
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
-nginx        alpine    f876afb64e03   2 weeks ago   42.6MB
+nginx        alpine    f876afb64e03   3 days ago   42.6MB
 
 # 컨테이너 구동
-$ docker run -d --name test-nginx -p 8080:80 nginx:alpine
+c1134czi5625@c5r4s7 ~ % docker run -d --name test-nginx -p 8080:80 nginx:alpine
 e3f4a5b6c7d8...
 
 # 구동 중인 컨테이너 상태 확인
-$ docker ps
+c1134czi5625@c5r4s7 ~ % docker ps
 CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES
 e3f4a5b6c7d8   nginx:alpine   "/docker-entrypoint.…"   4 seconds ago   Up 3 seconds   0.0.0.0:8080->80/tcp   test-nginx
 
 # 컨테이너 로그 트레이싱
-$ docker logs test-nginx
+c1134czi5625@c5r4s7 ~ % docker logs test-nginx
 /docker-entrypoint.sh: Configuration complete; ready for start up
 
 # 컨테이너 리소스 모니터링
-$ docker stats --no-stream test-nginx
+c1134czi5625@c5r4s7 ~ % docker stats --no-stream test-nginx
 CONTAINER ID   NAME         CPU %     MEM USAGE / LIMIT     MEM %
 e3f4a5b6c7d8   test-nginx   0.00%     2.35MiB / 7.671GiB    0.03%
 
 # 컨테이너 종료 및 삭제
-$ docker stop test-nginx && docker rm test-nginx
+c1134czi5625@c5r4s7 ~ % docker stop test-nginx && docker rm test-nginx
 ```
 
 ---
@@ -73,12 +73,12 @@ $ docker stop test-nginx && docker rm test-nginx
 
 ```bash
 # 1. hello-world 컨테이너 실행
-$ docker run hello-world
+c1134czi5625@c5r4s7 ~ % docker run hello-world
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
 # 2. ubuntu 컨테이너 진입 및 내부 조작 (-it 옵션)
-$ docker run -it --name ubuntu-practice ubuntu bash
+c1134czi5625@c5r4s7 ~ % docker run -it --name ubuntu-practice ubuntu bash
 root@a1b2c3d4e5f6:/# pwd
 /
 root@a1b2c3d4e5f6:/# ls -la
@@ -91,6 +91,6 @@ root@c9f8e7d6c5b4:/# exit
 exit
 
 # 종료 후 컨테이너 상태 점검 (-a)
-$ docker ps -a | grep ubuntu-practice
+c1134czi5625@c5r4s7 ~ % docker ps -a | grep ubuntu-practice
 a1b2c3d4e5f6   ubuntu   "bash"   2 minutes ago   Exited (0) 5 seconds ago   ubuntu-practice
 ```
